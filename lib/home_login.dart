@@ -103,7 +103,7 @@ class _HomeLoginState extends State<HomeLogin> {
       ),
 
       floatingActionButton: FloatingActionButton.extended(
-        label: Text('Help'),
+        label: Text('Helps'),
         tooltip: 'Help',
         icon: Icon(Icons.help_outline_outlined),
         backgroundColor: Colors.redAccent,
