@@ -101,7 +101,7 @@ class _HomeLoginState extends State<HomeLogin> {
                           ),
                         ],
                       ),
-                      
+
                     ),
                   ),
                 ),
@@ -109,6 +109,7 @@ class _HomeLoginState extends State<HomeLogin> {
             ],
           ),
         ),
+        
       ),
 
       floatingActionButton: FloatingActionButton.extended(
