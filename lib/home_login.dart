@@ -1,4 +1,7 @@
 // import 'package:animated_emoji/animated_emoji.dart';
+import 'package:angel/auth_services.dart';
+import 'package:angel/open_favorites.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeLogin extends StatefulWidget {
@@ -9,6 +12,9 @@ class HomeLogin extends StatefulWidget {
 }
 
 class _HomeLoginState extends State<HomeLogin> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +55,7 @@ class _HomeLoginState extends State<HomeLogin> {
                           TextField(
                             autocorrect: false,
                             autofocus: true,
+                            controller: emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               label: Text('Enter Your Email'),
@@ -63,6 +70,7 @@ class _HomeLoginState extends State<HomeLogin> {
                           SizedBox(height: 10),
                           TextField(
                             obscureText: true,
+                            controller: passwordController,
                             decoration: InputDecoration(
                               label: Text('Enter Your Password'),
                               // errorText: 'Please Enter Correct Password',
@@ -75,7 +83,7 @@ class _HomeLoginState extends State<HomeLogin> {
                           ),
                           SizedBox(height: 10),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: registerUserToFirebase,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.purpleAccent[200],
                               shadowColor: const Color.fromARGB(
@@ -110,5 +118,16 @@ class _HomeLoginState extends State<HomeLogin> {
         onPressed: () {},
       ),
     );
+  }
+
+  void registerUserToFirebase() async {
+    try {
+      await authservicesVaraiable.value.createAccount(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      debugPrint(e.message);
+    }
   }
 }
