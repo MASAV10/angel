@@ -14,6 +14,8 @@ class HomeLogin extends StatefulWidget {
 class _HomeLoginState extends State<HomeLogin> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  var errorMessageFromFirebaseForEmail = '';
+  var errorMessageFromFirebaseForPassword = '';
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +54,14 @@ class _HomeLoginState extends State<HomeLogin> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TextField(
+                          TextFormField(
                             autocorrect: false,
                             autofocus: true,
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               label: Text('Enter Your Email'),
-                              // errorText: 'Please Enter Valid Email-ID',
+                              errorText: errorMessageFromFirebaseForEmail,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(10),
@@ -68,11 +70,12 @@ class _HomeLoginState extends State<HomeLogin> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          TextField(
+                          TextFormField(
                             obscureText: true,
                             controller: passwordController,
                             decoration: InputDecoration(
                               label: Text('Enter Your Password'),
+                              errorText: errorMessageFromFirebaseForPassword,
                               // errorText: 'Please Enter Correct Password',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
@@ -101,17 +104,13 @@ class _HomeLoginState extends State<HomeLogin> {
                           ),
                         ],
                       ),
-
                     ),
                   ),
                 ),
               ),
-
-              
             ],
           ),
         ),
-
       ),
 
       floatingActionButton: FloatingActionButton.extended(
@@ -130,8 +129,22 @@ class _HomeLoginState extends State<HomeLogin> {
         email: emailController.text,
         password: passwordController.text,
       );
+      emailController.clear();
+      passwordController.clear();
     } on FirebaseAuthException catch (e) {
       debugPrint(e.message);
+      if (e.message!.contains('email')) {
+        setState(() {
+          errorMessageFromFirebaseForEmail = e.message.toString();
+          emailController.clear();
+        });
+      } else if (e.message!.contains('Password')) {
+        setState(() {
+          errorMessageFromFirebaseForPassword = e.message.toString();
+          emailController.clear();
+          passwordController.clear();
+        });
+      }
     }
   }
 }
