@@ -1,6 +1,7 @@
 // import 'package:animated_emoji/animated_emoji.dart';
 import 'package:angel/auth_services.dart';
 import 'package:angel/open_favorites.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -14,14 +15,48 @@ class HomeLogin extends StatefulWidget {
 class _HomeLoginState extends State<HomeLogin> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
   var errorMessageFromFirebaseForEmail = '';
   var errorMessageFromFirebaseForPassword = '';
+
+  Stream<QuerySnapshot> collectionReferenceOfUsers =
+      FirebaseFirestore.instance.collection('learnFlutterUsers').snapshots();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: Center(
+      appBar: AppBar(
+        title: SelectableText('Login Page'),
+        foregroundColor: Colors.black87,
+        backgroundColor: Colors.blueGrey[200],
+        actions: [Icon(Icons.arrow_back_outlined)],
+      ),
+      body: Card.filled(
+        margin: EdgeInsets.all(50),
+        color: Color(0xFFDA70D6),
+        child: StreamBuilder(
+          stream: collectionReferenceOfUsers,
+          builder: (context, AsyncSnapshot snapshot!){
+
+          },
+        ),
+      ),
+
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Help'),
+        tooltip: 'Help',
+        icon: Icon(Icons.help_outline_outlined),
+        backgroundColor: Colors.redAccent,
+        onPressed: () {},
+      ),
+    );
+  }
+
+  Widget getAuthenticatedPage() {
+    return Container(
+      child: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -36,15 +71,6 @@ class _HomeLoginState extends State<HomeLogin> {
                 width: 200,
                 child: Image.asset('Assests/masa.jpg'),
               ),
-              // Text(
-              //   'For Angel ',
-              //   style: TextStyle(
-              //     color: Color(0xFFC62828),
-              //     fontSize: 20,
-              //     fontWeight: FontWeight.w400,
-              //   ),
-              // ),
-              // AnimatedEmoji(AnimatedEmojis.anatomicalHeart),
               Card(
                 margin: EdgeInsets.all(20),
                 child: SingleChildScrollView(
@@ -112,13 +138,78 @@ class _HomeLoginState extends State<HomeLogin> {
           ),
         ),
       ),
+    );
+  }
 
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('Help'),
-        tooltip: 'Help',
-        icon: Icon(Icons.help_outline_outlined),
-        backgroundColor: Colors.redAccent,
-        onPressed: () {},
+  Widget createLoginPage() {
+    return Container(
+      child: Padding(
+        padding: EdgeInsets.all(100),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextFormField(
+                controller: userNameController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  // errorText: 'Not a vaild name',
+                  label: Text('Enter Your Name'),
+                  fillColor: Color(0xFF6A5ACD),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                ),
+              ),
+              SizedBox(height: 5),
+              TextFormField(
+                controller: phoneNumberController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  label: Text('Enter Your Phone Number'),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                ),
+              ),
+              SizedBox(height: 5),
+              //radio
+              SizedBox(height: 5),
+              TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  label: Text('Enter Your Email'),
+                  // errorText: errorMessageFromFirebaseForEmail,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                ),
+              ),
+              SizedBox(height: 5),
+              TextFormField(
+                obscureText: true,
+                controller: passwordController,
+                decoration: InputDecoration(
+                  label: Text('Enter Your Password'),
+                  errorText: errorMessageFromFirebaseForPassword,
+                  // errorText: 'Please Enter Correct Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                ),
+              ),
+              SizedBox(height: 5),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent[700],
+                  fixedSize: Size(200, 10),
+                ),
+                onPressed: () {},
+                child: Text('Login', style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
